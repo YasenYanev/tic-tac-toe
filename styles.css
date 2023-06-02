@@ -66,10 +66,22 @@ body {
 .plrs-wrapper {
     display: flex;
     justify-content: space-between;
-    width: 15rem;
+    align-items: center;
+    width: 18rem;
 }
 
 .plr1, 
 .plr2 {
     padding: 1rem;
+    border-radius: 1em;
+}
+
+.plr1 {
+    background-color: white;
+    color: black;
+}
+
+.plr-score {
+    width: min-content;
+    font-size: 1.5rem;
 }
