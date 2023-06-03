@@ -5,9 +5,9 @@ const gameBoard = document.getElementById("gameBoard")
 
 const gameBoardState = (() => {
     let gameBoardCells = [
-        "cell1", "cell2", "cell3", 
-        "cell4", "cell5", "cell6",  
-        "cell7", "cell8", "cell9"]
+        "", "", "", 
+        "", "", "",  
+        "", "", ""]
 
     let activePlayer = "X"
 
@@ -15,23 +15,21 @@ const gameBoardState = (() => {
         let cellNumber
         cell.addEventListener("click", (e) => {
             cellNumber = e.originalTarget.id
-            cellNumToArrayNum = cellNumber - 1
-            if (gameBoardCells.indexOf("X") && gameBoardCells.indexOf("O") === cellNumToArrayNum) {
-                return
-            }
-
             if (activePlayer === "X") {
                 cell.children[0].innerHTML = activePlayer
-                gameBoardCells.splice(cellNumToArrayNum, 1, "X")
+                gameBoardCells.splice(cellNumber - 1, 1, "X")
                 updateActivePlrDisplay(".plr2", ".plr1")
+                checkWinFor ("X")
+                console.log(gameBoardCells)
                 activePlayer = "O"
 
             } else if (activePlayer === "O") {
                 cell.children[0].innerHTML = activePlayer
-                gameBoardCells.splice(cellNumToArrayNum, 1, "O")
+                gameBoardCells.splice(cellNumber - 1, 1, "O")
                 updateActivePlrDisplay(".plr1", ".plr2")
+                checkWinFor("O")
+                console.log(gameBoardCells)
                 activePlayer = "X"
-
             }
         })
     })
@@ -43,11 +41,47 @@ const gameBoardState = (() => {
         document.querySelector(player2).style.background = "black"
         document.querySelector(player2).style.color = "white"
     }
-    const resetGame = () => {
-        marks.forEach(marker => {
-            marker.innerHTML = ""
-        })
+    const checkWinFor = (mark) => {
+        const winScenarios = [
+            [0, 1, 2], 
+            [3, 4, 5], 
+            [6, 7, 8], 
+            [0, 3, 6], 
+            [1, 4, 7], 
+            [2, 5, 8],
+            [0, 4, 8], 
+            [2, 4, 6]
+        ]
+        const getMarkIndex = (marker) => {
+            let indexes = []
+            for (let i = 0; i < gameBoardCells.length; i++) {
+                if (gameBoardCells[i] === marker) {
+                    indexes.push(i)
+                }
+            }
+            return indexes
+        }
+
+        for(let i = 0; i < winScenarios.length; i++) {
+            let streakCounter = undefined
+            let winCondition = winScenarios[i]
+            for (let c = 0; c < winCondition.length; c++) {
+                if (winCondition[c] === getMarkIndex(mark).indexOf(winCondition[c])) { // [0, 1, 2, 5] 3 === 0
+                    streakCounter += 1
+                    if (streakCounter === 3) {
+                        console.log("win")
+                        return
+                    }
+                }
+            }
+        }
     }
+
+    // const resetGame = () => {
+
+    //     })
+    // }
+
     return { }
 })()
 
