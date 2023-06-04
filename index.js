@@ -2,12 +2,8 @@ const cells = document.querySelectorAll("[data-cell]")
 const marks = document.querySelectorAll("[data-mark]")
 const gameBoard = document.getElementById("gameBoard")
 
-
 const gameBoardState = (() => {
-    let gameBoardCells = [
-        "", "", "", 
-        "", "", "",  
-        "", "", ""]
+    let gameBoardCells = ["", "", "", "", "", "",  "", "", ""]
 
     let activePlayer = "X"
 
@@ -16,23 +12,34 @@ const gameBoardState = (() => {
         cell.addEventListener("click", (e) => {
             cellNumber = e.originalTarget.id
             if (activePlayer === "X") {
-                cell.children[0].innerHTML = activePlayer
+                // cell.children[0].innerHTML = activePlayer
                 gameBoardCells.splice(cellNumber - 1, 1, "X")
-                updateActivePlrDisplay(".plr2", ".plr1")
                 checkWinFor ("X")
+                updateDisplay(cellNumber)
+                updateActivePlrDisplay(".plr2", ".plr1")
                 console.log(gameBoardCells)
                 activePlayer = "O"
 
             } else if (activePlayer === "O") {
-                cell.children[0].innerHTML = activePlayer
+                // cell.children[0].innerHTML = activePlayer
                 gameBoardCells.splice(cellNumber - 1, 1, "O")
-                updateActivePlrDisplay(".plr1", ".plr2")
                 checkWinFor("O")
+                updateDisplay(cellNumber)
+                updateActivePlrDisplay(".plr1", ".plr2")
                 console.log(gameBoardCells)
                 activePlayer = "X"
             }
         })
     })
+
+    const updateDisplay = (cellnum) => {
+        for (let r = 0; r < gameBoardCells.length; r++) {
+            if (gameBoardCells[r] === "" || (r === cellnum - 1) ) {
+                marks[r].innerHTML = activePlayer
+                return
+            }
+        }
+    }
 
     const updateActivePlrDisplay = (player, player2) => {
         document.querySelector(player).style.background = "white"
@@ -63,24 +70,24 @@ const gameBoardState = (() => {
         }
 
         for(let i = 0; i < winScenarios.length; i++) {
-            let streakCounter = undefined
+            let streakCounter = 0
             let winCondition = winScenarios[i]
             for (let c = 0; c < winCondition.length; c++) {
-                if (winCondition[c] === getMarkIndex(mark).indexOf(winCondition[c])) { // [0, 1, 2, 5] 3 === 0
+                if (getMarkIndex(mark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
                         console.log("win")
-                        return
+                        // resetGame()
                     }
                 }
             }
         }
     }
 
-    // const resetGame = () => {
-
-    //     })
-    // }
+    const resetGame = () => {
+        gameBoardCells = ["", "", "", "", "", "",  "", "", ""]
+        activePlayer = "X"
+    }
 
     return { }
 })()
