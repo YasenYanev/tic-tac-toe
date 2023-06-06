@@ -1,52 +1,49 @@
 const cells = document.querySelectorAll("[data-cell]")
 const marks = document.querySelectorAll("[data-mark]")
 const gameBoard = document.getElementById("gameBoard")
+const plr1 = document.querySelector(".plr1")
+const plr2 = document.querySelector(".plr2")
 
 const gameBoardState = (() => {
     let gameBoardCells = ["", "", "", "", "", "",  "", "", ""]
-
+    let win = false
     let activePlayer = "X"
 
     cells.forEach(cell => {
         let cellNumber
         cell.addEventListener("click", (e) => {
-            cellNumber = e.originalTarget.id
+            cellNum = e.originalTarget.id
             if (activePlayer === "X") {
-                // cell.children[0].innerHTML = activePlayer
-                gameBoardCells.splice(cellNumber - 1, 1, "X")
+                gameBoardCells.splice(cellNum - 1, 1, "X")
                 checkWinFor ("X")
-                updateDisplay(cellNumber)
-                updateActivePlrDisplay(".plr2", ".plr1")
-                console.log(gameBoardCells)
+                updateDisplay(cellNum - 1, plr2, plr1)
                 activePlayer = "O"
 
             } else if (activePlayer === "O") {
-                // cell.children[0].innerHTML = activePlayer
-                gameBoardCells.splice(cellNumber - 1, 1, "O")
+                gameBoardCells.splice(cellNum - 1, 1, "O")
                 checkWinFor("O")
-                updateDisplay(cellNumber)
-                updateActivePlrDisplay(".plr1", ".plr2")
-                console.log(gameBoardCells)
+                updateDisplay(cellNum - 1, plr1, plr2)
                 activePlayer = "X"
             }
         })
     })
 
-    const updateDisplay = (cellnum) => {
-        for (let r = 0; r < gameBoardCells.length; r++) {
-            if (gameBoardCells[r] === "" || (r === cellnum - 1) ) {
-                marks[r].innerHTML = activePlayer
-                return
-            }
+    const updateDisplay = (cellnum, player, player2) => {
+        if (gameBoardCells[cellnum] === "") {
+            marks[cellnum].innerHTML = activePlayer
         }
-    }
 
-    const updateActivePlrDisplay = (player, player2) => {
-        document.querySelector(player).style.background = "white"
-        document.querySelector(player).style.color = "black"
+        if (win) {
+            resetGame()
+            win = false
+        }
 
-        document.querySelector(player2).style.background = "black"
-        document.querySelector(player2).style.color = "white"
+        player.style.background = "white"
+        player.style.color = "black"
+        
+        player2.style.background = "black"
+        player2.style.color = "white"
+        console.log(activePlayer)
     }
     const checkWinFor = (mark) => {
         const winScenarios = [
@@ -76,8 +73,7 @@ const gameBoardState = (() => {
                 if (getMarkIndex(mark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
-                        console.log("win")
-                        // resetGame()
+                        win = true
                     }
                 }
             }
@@ -85,23 +81,26 @@ const gameBoardState = (() => {
     }
 
     const resetGame = () => {
-        gameBoardCells = ["", "", "", "", "", "",  "", "", ""]
+        gameBoardCells = ["", "", "", "", "", "", "", "", ""]
         activePlayer = "X"
+        marks.forEach(mark => {
+            mark.innerHTML = ""
+        })
     }
 
     return { }
 })()
 
-const PlayerFactory = (name) => {
-    let wins = undefined
+const PlayerFactory = () => {
+    let wins = 0
 
-    return {name}
+    return {wins}
 }
 
 
 
 
-const player1 = PlayerFactory("X")
-const player2 = PlayerFactory("O")
+const player1 = PlayerFactory()
+const player2 = PlayerFactory()
 
 
