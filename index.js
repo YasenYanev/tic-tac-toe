@@ -10,7 +10,6 @@ const gameBoardState = (() => {
     let activePlayer = "X"
 
     cells.forEach(cell => {
-        let cellNumber
         cell.addEventListener("click", (e) => {
             cellNum = e.originalTarget.id
             if (activePlayer === "X") {
@@ -18,6 +17,7 @@ const gameBoardState = (() => {
                 checkWinFor ("X")
                 updateDisplay(cellNum - 1, plr2, plr1)
                 activePlayer = "O"
+
 
             } else if (activePlayer === "O") {
                 gameBoardCells.splice(cellNum - 1, 1, "O")
@@ -28,24 +28,25 @@ const gameBoardState = (() => {
         })
     })
 
-    const updateDisplay = (cellnum, player, player2) => {
-        if (gameBoardCells[cellnum] === "") {
-            marks[cellnum].innerHTML = activePlayer
-        }
+    const updateDisplay = (cellnum, plr, plr1) => {
+        marks[cellnum].innerHTML = activePlayer
 
         if (win) {
             resetGame()
             win = false
         }
 
-        player.style.background = "white"
-        player.style.color = "black"
+        plr.style.background = "white"
+        plr.style.color = "black"
         
-        player2.style.background = "black"
-        player2.style.color = "white"
-        console.log(activePlayer)
+        plr1.style.background = "black"
+        plr1.style.color = "white"
+
+        document.querySelector(".plr1-score").innerHTML = player1.wins
+        document.querySelector(".plr2-score").innerHTML = player2.wins
     }
-    const checkWinFor = (mark) => {
+
+    const checkWinFor = (winMark) => {
         const winScenarios = [
             [0, 1, 2], 
             [3, 4, 5], 
@@ -70,12 +71,18 @@ const gameBoardState = (() => {
             let streakCounter = 0
             let winCondition = winScenarios[i]
             for (let c = 0; c < winCondition.length; c++) {
-                if (getMarkIndex(mark).includes(winCondition[c])) {
+                if (getMarkIndex(winMark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
                         win = true
+                        if (winMark === player1.idMark) {
+                            player1.wins += 1
+                        } else if (winMark === player2.idMark) {
+                            player2.wins += 1
+                        }
                     }
                 }
+                
             }
         }
     }
@@ -91,16 +98,17 @@ const gameBoardState = (() => {
     return { }
 })()
 
-const PlayerFactory = () => {
+const PlayerFactory = (playerMark) => {
+    let idMark = playerMark
     let wins = 0
 
-    return {wins}
+    return {wins, idMark}
 }
 
 
 
 
-const player1 = PlayerFactory()
-const player2 = PlayerFactory()
+const player1 = PlayerFactory("X")
+const player2 = PlayerFactory("O")
 
 
