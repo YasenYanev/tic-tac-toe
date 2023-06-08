@@ -19,7 +19,7 @@ const gameBoardState = (() => {
 
     cells.forEach(cell => {
         cell.addEventListener("click", (e) => {
-            cellNum = e.originalTarget.id
+            cellNum = e.target.id
             if (activePlayer === "X") {
                 gameBoardCells.splice(cellNum - 1, 1, "X")
                 checkWinFor ("X")
@@ -35,6 +35,7 @@ const gameBoardState = (() => {
                 updateDisplay(cellNum - 1)
                 activePlayer = "X"
             }
+            console.log(e.target.id)
         })
     })
 
@@ -50,6 +51,12 @@ const gameBoardState = (() => {
                 plr1Score.innerHTML = player1.wins
                 plr2Score.innerHTML = player2.wins
                 win = false
+
+                plr1.style.background = "white"
+                plr1.style.color = "black"
+                
+                plr2.style.background = "black"
+                plr2.style.color = "white"
                 return
             })
             restartBtn.addEventListener("click", () => {
@@ -99,7 +106,7 @@ const gameBoardState = (() => {
                 if (getMarkIndex(winMark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
-                        activePlayer = "X"
+                        // activePlayer = "X"
                         win = true
                         if (winMark === player1.idMark) {
                             player1.wins += 1
