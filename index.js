@@ -2,7 +2,15 @@ const cells = document.querySelectorAll("[data-cell]")
 const marks = document.querySelectorAll("[data-mark]")
 const gameBoard = document.getElementById("gameBoard")
 const plr1 = document.querySelector(".plr1")
+const plr1Score = document.querySelector(".plr1-score")
+const plr2Score = document.querySelector(".plr2-score")
 const plr2 = document.querySelector(".plr2")
+const winMsg = document.getElementById("win-message")
+const winMsgTxt = document.getElementById("win-message-text")
+const continueBtn = document.getElementById("continue-btn")
+const restartBtn = document.getElementById("restart-btn")
+ 
+
 
 const gameBoardState = (() => {
     let gameBoardCells = ["", "", "", "", "", "",  "", "", ""]
@@ -15,35 +23,52 @@ const gameBoardState = (() => {
             if (activePlayer === "X") {
                 gameBoardCells.splice(cellNum - 1, 1, "X")
                 checkWinFor ("X")
-                updateDisplay(cellNum - 1, plr2, plr1)
-                activePlayer = "O"
-
-
+                updateDisplay(cellNum - 1)
+                if (win) {
+                    activePlayer = "X"
+                } else (
+                    activePlayer = "O"
+                )
             } else if (activePlayer === "O") {
                 gameBoardCells.splice(cellNum - 1, 1, "O")
                 checkWinFor("O")
-                updateDisplay(cellNum - 1, plr1, plr2)
+                updateDisplay(cellNum - 1)
                 activePlayer = "X"
             }
         })
     })
 
-    const updateDisplay = (cellnum, plr, plr1) => {
+    const updateDisplay = (cellnum) => {
         marks[cellnum].innerHTML = activePlayer
 
         if (win) {
-            resetGame()
-            win = false
+            winMsgTxt.innerHTML = `Player ${activePlayer} has won!`
+            winMsg.style.display = "inherit"
+            continueBtn.addEventListener("click", () => {
+                resetGame()
+                winMsg.style.display = "none"
+                plr1Score.innerHTML = player1.wins
+                plr2Score.innerHTML = player2.wins
+                win = false
+                return
+            })
+            restartBtn.addEventListener("click", () => {
+                location.reload()
+            })
         }
-
-        plr.style.background = "white"
-        plr.style.color = "black"
-        
-        plr1.style.background = "black"
-        plr1.style.color = "white"
-
-        document.querySelector(".plr1-score").innerHTML = player1.wins
-        document.querySelector(".plr2-score").innerHTML = player2.wins
+        if (activePlayer === "X") {
+            plr1.style.background = "white"
+            plr1.style.color = "black"
+            
+            plr2.style.background = "black"
+            plr2.style.color = "white"
+        } else if (activePlayer === "O") {
+            plr2.style.background = "white"
+            plr2.style.color = "black"
+            
+            plr1.style.background = "black"
+            plr1.style.color = "white"
+        }
     }
 
     const checkWinFor = (winMark) => {
@@ -74,6 +99,7 @@ const gameBoardState = (() => {
                 if (getMarkIndex(winMark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
+                        activePlayer = "X"
                         win = true
                         if (winMark === player1.idMark) {
                             player1.wins += 1
@@ -89,13 +115,10 @@ const gameBoardState = (() => {
 
     const resetGame = () => {
         gameBoardCells = ["", "", "", "", "", "", "", "", ""]
-        activePlayer = "X"
         marks.forEach(mark => {
             mark.innerHTML = ""
         })
     }
-
-    return { }
 })()
 
 const PlayerFactory = (playerMark) => {
