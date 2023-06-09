@@ -24,7 +24,7 @@ const gameBoardState = (() => {
                 gameBoardCells.splice(cellNum - 1, 1, "X")
                 checkWinFor ("X")
                 updateDisplay(cellNum - 1)
-                if (win) {
+                if (win || gameBoardCells.includes("") != true) {
                     activePlayer = "X"
                 } else (
                     activePlayer = "O"
@@ -35,15 +35,18 @@ const gameBoardState = (() => {
                 updateDisplay(cellNum - 1)
                 activePlayer = "X"
             }
-            console.log(e.target.id)
         })
     })
 
     const updateDisplay = (cellnum) => {
         marks[cellnum].innerHTML = activePlayer
 
-        if (win) {
-            winMsgTxt.innerHTML = `Player ${activePlayer} has won!`
+        if (win || gameBoardCells.includes("") != true) {
+            if (win != true) {
+                winMsgTxt.innerHTML = `Tie!`
+            } else {
+                winMsgTxt.innerHTML = `Player ${activePlayer} has won!`
+            }
             winMsg.style.display = "inherit"
             continueBtn.addEventListener("click", () => {
                 resetGame()
@@ -64,17 +67,17 @@ const gameBoardState = (() => {
             })
         }
         if (activePlayer === "X") {
-            plr1.style.background = "white"
-            plr1.style.color = "black"
-            
-            plr2.style.background = "black"
-            plr2.style.color = "white"
-        } else if (activePlayer === "O") {
             plr2.style.background = "white"
             plr2.style.color = "black"
             
             plr1.style.background = "black"
             plr1.style.color = "white"
+        } else if (activePlayer === "O") {
+            plr1.style.background = "white"
+            plr1.style.color = "black"
+            
+            plr2.style.background = "black"
+            plr2.style.color = "white"
         }
     }
 
@@ -106,7 +109,6 @@ const gameBoardState = (() => {
                 if (getMarkIndex(winMark).includes(winCondition[c])) {
                     streakCounter += 1
                     if (streakCounter === 3) {
-                        // activePlayer = "X"
                         win = true
                         if (winMark === player1.idMark) {
                             player1.wins += 1
